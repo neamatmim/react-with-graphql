@@ -16,19 +16,19 @@ const CreatePost = () => {
       authorId: 3,
       title: 'Hello Mim',
     },
-    refetchQueries: gql`
-      query {
-        posts {
+    refetchQueries: [{query: gql`
+    query {
+      posts {
+        id
+        title
+        author {
           id
-          title
-          author {
-            id
-            firstName
-            lastName
-          }
+          firstName
+          lastName
         }
       }
-    `,
+    }
+  `}]
   }); // Need to redirect functionality
 
   return (
