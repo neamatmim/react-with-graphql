@@ -1,45 +1,9 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import gql from 'graphql-tag';
-import { useQuery } from 'react-apollo-hooks';
+import React from 'react';
+import { useQuery, useMutation } from 'react-apollo-hooks';
 import CreatePost from './components/CreatePost';
 
-const GET_APP = gql`
-  query {
-    posts {
-      id
-      title
-      author {
-        id
-        firstName
-        lastName
-      }
-    }
-  }
-`;
-// class App extends Component {
-//   render() {
-//     return (
-//       <div className="App">
-//         <header className="App-header">
-//           <img src={logo} className="App-logo" alt="logo" />
-//           <p>
-//             Edit <code>src/App.js</code> and save to reload.
-//           </p>
-//           <a
-//             className="App-link"
-//             href="https://reactjs.org"
-//             target="_blank"
-//             rel="noopener noreferrer"
-//           >
-//             Learn React
-//           </a>
-//         </header>
-//       </div>
-//     );
-//   }
-// }
+import { GET_POSTS } from './graphql/queries';
+import { DELETE_POST } from './graphql/mutations';
 
 // const App = () => (
 // <Query query={GET_APP}>
@@ -64,16 +28,28 @@ const GET_APP = gql`
 // );
 
 const App = () => {
-  const { data, error } = useQuery(GET_APP);
+  const { data, error } = useQuery(GET_POSTS);
   if (error) return `Error! ${error.message}`;
-  // console.log(useQuery(GET_APP));
   return (
     <div>
       <CreatePost />
       <ul>
-        {data.posts.map(post => (
-          <li key={post.id}>{post.title}</li>
-        ))}
+        {data.posts.map(post => {
+          const handleDeletePost = useMutation(DELETE_POST, {
+            variables: { postId: post.id },
+            refetchQueries: [
+              {
+                query: GET_POSTS,
+              },
+            ],
+          });
+          return (
+            <li key={post.id}>
+              {post.title}
+              <button onClick={handleDeletePost}>&times;</button>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

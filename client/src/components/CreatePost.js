@@ -1,14 +1,8 @@
 import React, { Suspense, useState } from 'react';
-import gql from 'graphql-tag';
 import { useMutation } from 'react-apollo-hooks';
 
-const ADD_POST = gql`
-  mutation AddPost($authorId: ID!, $title: String!) {
-    addPost(authorId: $authorId, title: $title) {
-      id
-    }
-  }
-`;
+import { ADD_POST } from '../graphql/mutations';
+import { GET_POSTS } from '../graphql/queries';
 
 const CreatePost = () => {
   const [formData, setFormData] = useState({ authorId: undefined, title: '' });
@@ -17,19 +11,7 @@ const CreatePost = () => {
     variables: formData,
     refetchQueries: [
       {
-        query: gql`
-          query {
-            posts {
-              id
-              title
-              author {
-                id
-                firstName
-                lastName
-              }
-            }
-          }
-        `,
+        query: GET_POSTS,
       },
     ],
   });

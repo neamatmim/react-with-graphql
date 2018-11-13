@@ -1,5 +1,5 @@
 import { GraphQLServer, PubSub } from 'graphql-yoga';
-import { find, filter } from 'lodash';
+import { find, filter, remove } from 'lodash';
 
 const authors = [
   { id: 1, firstName: 'Tom', lastName: 'Coleman' },
@@ -38,6 +38,7 @@ const typeDefs = `
   }
   type Mutation {
     addPost(authorId: ID!, title: String!): Post
+    deletePost(postId: ID!): Post
   }
   type Subscription {
     counter: Counter!
@@ -69,6 +70,10 @@ const resolvers = {
       posts.push(post);
 
       return post;
+    },
+    deletePost: (_, args) => {
+      remove(posts, post => post.id == args.postId);
+      return;
     },
   },
   Subscription: {
