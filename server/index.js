@@ -15,13 +15,13 @@ const posts = [
 
 const typeDefs = `
   type Author {
-    id: Int!
+    id: ID!
     firstName: String
     lastName: String
     posts: [Post]
   }
   type Post {
-    id: Int!
+    id: ID!
     title: String
     author: Author
   }
@@ -33,11 +33,11 @@ const typeDefs = `
 
   type Query {
     posts: [Post]
-    author(id: Int!): Author
+    author(id: ID!): Author
     authors: [Author]
   }
   type Mutation {
-    addPost(authorId: Int!, title: String!): Post
+    addPost(authorId: ID!, title: String!): Post
   }
   type Subscription {
     counter: Counter!
