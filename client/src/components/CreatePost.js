@@ -9,11 +9,13 @@ const CreatePost = () => {
 
   const handleAddMutation = useMutation(ADD_POST, {
     variables: formData,
-    refetchQueries: [
-      {
+    update: (cache, { data: { addPost } }) => {
+      var { posts } = cache.readQuery({ query: GET_POSTS });
+      cache.writeQuery({
         query: GET_POSTS,
-      },
-    ],
+        data: { posts: posts.concat([addPost]) },
+      });
+    },
   });
 
   const handleFormSubmit = event => {
